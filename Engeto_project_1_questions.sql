@@ -22,17 +22,23 @@ WHERE TRUE
 
 
 /* 3) Která kategorie potravin zdražuje nejpomaleji (je u ní nejnižší percentuální meziroèní nárùst)? */
+WITH percentage_change AS (	
+	SELECT
+		`Year`,
+		name,
+		goods_price,
+		ROUND(goods_price * 100 / LAG(goods_price) OVER (PARTITION BY name ORDER BY `Year`
+								ROWS BETWEEN UNBOUNDED PRECEDING
+										AND CURRENT ROW)-100, 2) AS percentage_year_change
+	FROM t_Pepa_Poskocil_project_SQL_primary_final ppp
+	GROUP BY `Year`, name
+	ORDER BY name, `Year`
+)
 SELECT
-	`Year`,
 	name,
-	goods_price,
-	ROUND(goods_price * 100 / LAG(goods_price) OVER (PARTITION BY name ORDER BY `Year`
-							ROWS BETWEEN UNBOUNDED PRECEDING
-									AND CURRENT ROW)-100, 2) AS percentage_year_change
-FROM t_Pepa_Poskocil_project_SQL_primary_final ppp
-GROUP BY `Year`, name
-ORDER BY name, `Year`;
-
+	ROUND(AVG(percentage_year_change), 2)
+FROM percentage_change
+GROUP BY name;	
 
 /* 4) Existuje rok, ve kterém byl meziroèní nárùst cen potravin výraznì vyšší než rùst mezd (vìtší než 10 %)?
 --> 2007 */

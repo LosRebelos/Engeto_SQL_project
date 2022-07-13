@@ -1,7 +1,7 @@
 
 # SQL projekt
 
-### Výstupem toho projektu jsou dvě tabulky: 
+### Výstupem tohoto projektu jsou dvě tabulky: 
 
     t_Pepa_Poskocil_project_SQL_primary_final
 
